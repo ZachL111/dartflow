@@ -1,0 +1,73 @@
+{
+  "repo": "dartflow",
+  "language": "Dart",
+  "category": "Mobile workflows",
+  "goal": "Model offline form queues, validation, retries, and merge outcomes.",
+  "review_model": {
+    "terms": [
+      "form pressure",
+      "sync drift",
+      "local state",
+      "conflict cost"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "form pressure",
+      "signal": 60,
+      "slack": 30,
+      "drag": 13,
+      "confidence": 82,
+      "score": 193,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "sync drift",
+      "signal": 45,
+      "slack": 33,
+      "drag": 8,
+      "confidence": 54,
+      "score": 153,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "local state",
+      "signal": 46,
+      "slack": 53,
+      "drag": 10,
+      "confidence": 72,
+      "score": 187,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "conflict cost",
+      "signal": 79,
+      "slack": 41,
+      "drag": 19,
+      "confidence": 89,
+      "score": 231,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "form pressure",
+      "signal": 76,
+      "slack": 34,
+      "drag": 17,
+      "confidence": 68,
+      "score": 203,
+      "lane": "ship"
+    }
+  ]
+}
