@@ -1,26 +1,40 @@
 # dartflow
 
-dartflow is a Dart project for mobile workflows. It focuses on this technical goal: Model offline form queues, validation, retries, and merge outcomes.
+`dartflow` is a Dart project for Mobile workflows. It turns model offline form queues, validation, retries, and merge outcomes into a small local model with readable fixtures and a direct verification command.
 
-## Why it exists
+## Reading Dartflow
 
-Small engineering tools are easiest to trust when their rules are explicit, testable, and cheap to run locally. This repository packages a focused model with fixture data and a local verification path so behavior can be reviewed without external services.
+Start with the README, then open `metadata/project.json` to check the constants behind the examples. After that, `fixtures/cases.csv` shows the compact path and `examples/extended_cases.csv` gives a wider look at the same rule.
 
-## Features
+## Purpose
 
-- Deterministic policy scoring over fixture scenarios.
-- Clear accept or review decisions based on a documented threshold.
-- A command-line or local test path for quick validation.
-- Golden fixture data for repeatable checks.
-- Minimal dependencies and a compact project layout.
+This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
 
-## Architecture Notes
+## What It Does
 
-The core module exposes a small scoring API. Inputs are simple numeric signals: demand, capacity, latency, risk, and weight. The score uses a threshold of 162, risk penalty 5, latency penalty 2, and weight bonus 4. Tests exercise the public API against the fixture cases in `fixtures/cases.csv`.
+- Models local state with deterministic scoring and explicit review decisions.
+- Uses fixture data to keep sync pressure changes visible in code review.
+- Includes extended examples for form constraints, including `surge` and `degraded`.
+- Documents offline paths tradeoffs in `docs/operations.md`.
+- Runs locally with a single verification command and no external credentials.
+
+## Design Sketch
+
+The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Dart project uses a small library and assertion script, avoiding package dependencies for verification.
+
+## Files Worth Reading
+
+- `lib`: library code
+- `tests`: verification harness
+- `fixtures`: compact golden scenarios
+- `examples`: expanded scenario set
+- `metadata`: project constants and verification metadata
+- `docs`: operations and extension notes
+- `scripts`: local verification and audit commands
 
 ## Setup
 
-Install the Dart toolchain and run commands from the repository root.
+Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
 
 ## Usage
 
@@ -28,16 +42,27 @@ Install the Dart toolchain and run commands from the repository root.
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-The verification script builds or runs the project and checks the fixture decisions.
+This runs the language-level build or test path against the compact fixture set.
 
-## Tests
+## Verification
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
 ```
 
-## Limitations And Roadmap
+The audit command checks repository structure and README constraints before it delegates to the verifier.
 
-- The fixture set is intentionally small so it can be audited by hand.
-- Future work could add richer domain-specific input adapters.
-- The model is a local demonstration and does not claim production use.
+## Fixture Notes
+
+`baseline` is the first example I would inspect because it lands on the `review` path with a score of 158. The broader file also keeps `degraded` at 2 and `surge` at 260, which gives the model a useful low-to-high spread.
+
+## Limits
+
+The fixture set is deliberately small. That keeps the review surface clear, but it also means the model should not be treated as a complete domain simulator.
+
+## Next Directions
+
+- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
+- Add a short report command that prints the score breakdown for a single scenario.
+- Add malformed input fixtures so the failure path is as visible as the happy path.
+- Add one more mobile workflows fixture that focuses on a malformed or borderline input.
